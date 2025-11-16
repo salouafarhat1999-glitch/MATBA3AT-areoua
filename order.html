@@ -63,7 +63,7 @@ const notes=document.getElementById("notes").value;
 const file=document.getElementById("fileUpload").files[0];
 
 // رابط الـ Webhook الخاص بـ n8n
-const N8N_WEBHOOK_URL="https://espaceareoua.app.n8n.cloud/webhook-test/a91c44f2-2850-481b-bcbd-ead78be9b2e0";
+const N8N_WEBHOOK_URL="https://espaceareoua.app.n8n.cloud/webhook/a91c44f2-2850-481b-bcbd-ead78be9b2e0";
 
 const formData=new FormData();
 formData.append("name",name);
@@ -81,4 +81,5 @@ else{msg.innerHTML="❌ حدث خطأ أثناء الإرسال.";msg.className=
 </script>
 
 </body>
+
 </html>
