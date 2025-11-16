@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>طلب طباعة</title>
+<style>
+body{font-family:"Tajawal",sans-serif;background:#f2f2f2;margin:0;padding:0;}
+.container{width:90%;max-width:500px;margin:40px auto;padding:25px;background:#fff;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,0.1);}
+h2{text-align:center;margin-bottom:20px;color:#333;}
+label{font-size:15px;font-weight:bold;margin-top:10px;display:block;}
+input,select,textarea{width:100%;padding:10px 12px;margin-top:6px;border:1px solid #aaa;border-radius:6px;font-size:14px;outline:none;}
+button{width:100%;margin-top:20px;padding:12px;background:#ffcc00;border:none;border-radius:6px;font-size:18px;cursor:pointer;transition:.3s;}
+button:hover{background:#e6b800;}
+.success{text-align:center;color:green;margin-top:15px;}
+.error{text-align:center;color:red;margin-top:15px;}
+</style>
+</head>
+<body>
+
+<div class="container">
+<h2>طلب خدمة الطباعة</h2>
+
+<form id="orderForm">
+
+<label>الاسم الكامل</label>
+<input type="text" id="name" required>
+
+<label>رقم الهاتف</label>
+<input type="text" id="phone" required>
+
+<label>نوع الطلب</label>
+<select id="service" required>
+<option value="">اختر نوع الطباعة</option>
+<option value="بطاقات">بطاقات</option>
+<option value="بوسترات">بوسترات</option>
+<option value="تصاميم">تصاميم</option>
+<option value="ملصقات">ملصقات</option>
+<option value="وثائق">وثائق</option>
+</select>
+
+<label>رفع ملف (اختياري)</label>
+<input type="file" id="fileUpload">
+
+<label>ملاحظات إضافية</label>
+<textarea id="notes" rows="4"></textarea>
+
+<button type="submit">إرسال الطلب</button>
+
+<p id="msg"></p>
+</form>
+</div>
+
+<script>
+document.getElementById("orderForm").addEventListener("submit", async function(e){
+e.preventDefault();
+const msg=document.getElementById("msg");
+msg.innerHTML="جارٍ الإرسال...";
+const name=document.getElementById("name").value;
+const phone=document.getElementById("phone").value;
+const service=document.getElementById("service").value;
+const notes=document.getElementById("notes").value;
+const file=document.getElementById("fileUpload").files[0];
+
+// رابط الـ Webhook الخاص بـ n8n
+const N8N_WEBHOOK_URL="https://espaceareoua.app.n8n.cloud/webhook-test/a91c44f2-2850-481b-bcbd-ead78be9b2e0";
+
+const formData=new FormData();
+formData.append("name",name);
+formData.append("phone",phone);
+formData.append("service",service);
+formData.append("notes",notes);
+if(file){formData.append("file",file);}
+
+try{
+const response=await fetch(N8N_WEBHOOK_URL,{method:"POST",body:formData});
+if(response.ok){msg.innerHTML="✔ تم إرسال الطلب بنجاح!";msg.className="success";document.getElementById("orderForm").reset();}
+else{msg.innerHTML="❌ حدث خطأ أثناء الإرسال.";msg.className="error";}
+}catch(error){msg.innerHTML="⚠ لا يمكن الاتصال بالسيرفر.";msg.className="error";}
+});
+</script>
+
+</body>
+</html>
